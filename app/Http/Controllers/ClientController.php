@@ -3,42 +3,43 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Admin;
+use App\Models\Client;
 use App\Models\User;
 use App\Models\Direction;
 use App\Models\Person;
 use Illuminate\Support\Facades\DB;
 
-class AdminController extends Controller
+
+class ClientController extends Controller
 {
     public function index(Request $request){
-        // $admins = admin::findOrFail()->get();
-        $admins = Admin::with(['user','person', 'direction'])->get();
+        // $Clients = Client::findOrFail()->get();
+        $Clients = Client::with(['user','person', 'direction'])->get();
 
-        if($admins->isEmpty()){
+        if($Clients->isEmpty()){
             return response()->json([
-                'message' => 'no se encontraron admin',
+                'message' => 'no se encontraron Client',
                 ],400);
         }
 
         return response()->json([
-            'message' => 'Todos los admins aquí',
-            'data' => $admins
+            'message' => 'Todos los Clients aquí',
+            'data' => $Clients
         ],200);
     }
 
     public function show($id){
-        $admin = Admin::with(['user','person', 'direction'])->findOrFail($id)->get();
+        $Client = Client::with(['user','person', 'direction'])->findOrFail($id)->get();
 
-        if($admin->isEmpty()){
+        if($Client->isEmpty()){
             return response()->json([
-                'message' => 'no se encontro al admin',
+                'message' => 'no se encontro al Client',
                 ],400);
         }
 
         return response()->json([
-            'message' => 'datos del admin',
-            'data' => $admin
+            'message' => 'datos del Client',
+            'data' => $Client
         ],200);
     }
 
@@ -55,9 +56,7 @@ class AdminController extends Controller
             'colony' => 'required|string',
             'city' => 'required|string',
             'postal_code' => 'required|string',
-            'payment' => 'required',
-            'schedule' => 'required|string',
-            'admin_type' => 'required',
+            'client_type' => 'required',
         ]);
 
         try {
@@ -90,20 +89,18 @@ class AdminController extends Controller
                 $direction->save();
 
                 
-                // $admin = new Admin();
-                $admin = Admin::create([
+                // $Client = new Client();
+                $Client = Client::create([
                     'user_id' => $user->user_id,
                     'person_id' => $person->person_id,
                     'direction_id' => $direction->direction_id,
-                    'payment' => $request->payment,
-                    'schedule' => $request->schedule,
-                    'admin_type'=> $request->admin_type
+                    'client_type' => $request->client_type,
                 ]);
-                $admin->save();
+                $Client->save();
 
                 return response()->json([
                     'message' => 'User actualizado correctamente',
-                    'data' => $admin
+                    'data' => $Client
                 ], 200);
             });
         } catch (\Exception $e) {
@@ -117,53 +114,51 @@ class AdminController extends Controller
     public function update(Request $request, $id)
     {
         //busca al usuario, si no encuentra manda error
-        $admin = Admin::with(['user', 'person', 'direction'])->find($id);
+        $Client = Client::with(['user', 'person', 'direction'])->find($id);
 
-        if (!$admin) {
-            return response()->json(['error' => 'admin no encontrado'], 404);
+        if (!$Client) {
+            return response()->json(['error' => 'Client no encontrado'], 404);
         }
         // los datos que se pueden alterar, esta en "sometimes" para que puedas modificar los campos que quieras, 
         // y los demas queden como estaban
         $request->validate([
-            'email' => 'sometimes|string|email',
-            'password' => 'sometimes|string',
-            'rol' => 'sometimes',
-            'name' => 'sometimes|string', 
-            'last_name' => 'sometimes|string',
-            'rfc' => 'sometimes|string',
-            'phone_number' => 'sometimes|string',
-            'street' => 'sometimes|string', 
-            'colony' => 'sometimes|string',
-            'city' => 'sometimes|string',
-            'postal_code' => 'sometimes|string',
-            'payment' => 'sometimes',
-            'schedule' => 'sometimes|string',
-            'admin_type' => 'sometimes',
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+            'rol' => 'required',
+            'name' => 'required|string', 
+            'last_name' => 'required|string',
+            'rfc' => 'required|string',
+            'phone_number' => 'required|string',
+            'street' => 'required|string', 
+            'colony' => 'required|string',
+            'city' => 'required|string',
+            'postal_code' => 'required|string',
+            'client_type' => 'required',
         ]);
         try {
-            return DB::transaction(function () use ($request, $admin){
+            return DB::transaction(function () use ($request, $Client){
         
                 if ($request->hasAny(['email', 'password', 'rol'])) {
                     $userData = $request->only(['email', 'rol']);
                     if ($request->has('password')) {
                         $userData['password'] = bcrypt($request->password);
                     }
-                    $admin->user->update($userData);
+                    $Client->user->update($userData);
                 }
     
                 if ($request->hasAny(['name', 'last_name', 'rfc', 'phone_number'])) {
-                    $admin->person->update($request->only(['name', 'last_name', 'rfc', 'phone_number']));
+                    $Client->person->update($request->only(['name', 'last_name', 'rfc', 'phone_number']));
                 }
     
                 if ($request->hasAny(['street', 'colony', 'city', 'postal_code'])) {
-                    $admin->direction->update($request->only(['street', 'colony', 'city', 'postal_code']));
+                    $Client->direction->update($request->only(['street', 'colony', 'city', 'postal_code']));
                 }
     
-                $admin->update($request->only(['payment', 'schedule', 'admin_type']));
+                $Client->update($request->only(['Client_type']));
 
                 return response()->json([
                     'message' => 'User actualizado correctamente',
-                    'data' => $admin
+                    'data' => $Client
                 ], 200);
             });
         } catch (\Exception $e) {
