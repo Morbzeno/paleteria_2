@@ -11,9 +11,9 @@ use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
-    public function index(Request $request){
+    public function index(){
         // $admins = admin::find()->get();
-        $admins = Admin::with(['user','person', 'direction'])->get();
+        $admins = Admin::with(['user','person', 'direction'])->paginate(10);
 
         if($admins->isEmpty()){
             return response()->json([
@@ -21,10 +21,12 @@ class AdminController extends Controller
                 ],400);
         }
 
-        return response()->json([
-            'message' => 'Todos los admins aquí',
-            'data' => $admins
-        ],200);
+        // return response()->json([
+        //     'message' => 'Todos los admins aquí',
+        //     'data' => $admins
+        // ],200);
+
+        return view('admins.index', compact('admins'));
     }
 
     public function show($id){
@@ -114,6 +116,14 @@ class AdminController extends Controller
         }
     }
 
+    public function edit($id)
+    {
+        $admin = Admin::with(['user', 'person', 'direction'])->find($id);
+
+   
+        return view('admins.edit', compact('admin'));
+    }
+
     public function update(Request $request, $id)
     {
         //busca al usuario, si no encuentra manda error
@@ -167,8 +177,10 @@ class AdminController extends Controller
         }
         
         $admin->delete();
-        return response()->json([
-            'message' => 'Admin eliminado correctamente'
-        ], 200);
+
+        return redirect()->route('admins.index')->with('success', 'Administrador eliminado correctamente.');
+        // return response()->json([
+        //     'message' => 'Admin eliminado correctamente'
+        // ], 200);
     }
 }

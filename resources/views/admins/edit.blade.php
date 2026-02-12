@@ -9,7 +9,7 @@
                     <h4 class="mb-0"><i class="fas fa-user-shield me-2"></i>Registro de Administrador</h4>
                 </div>
                 <div class="card-body p-4">
-                    <form action="{{ route('admins.store', $admin->admin_id) }}" method="POST">
+                    <form action="{{ route('admins.store') }}" method="POST">
                         @csrf
 
                         <div class="mb-4">
@@ -17,7 +17,7 @@
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Correo Electrónico</label>
-                                    <input type="email" name="email" class="form-control" placeholder="ejemplo@correo.com" required>
+                                    <input type="email" name="email" class="form-control" value="{{old('name',$admin->user->email)}}" required >
                                     @error('email')
                                         <span style="color: red;">{{ $message }}</span>
                                     @enderror
@@ -25,9 +25,8 @@
                                 
                                 <div class="col-md-6">
                                     <label class="form-label">Contraseña</label>
-                                    <input type="password" name="password" class="form-control" placeholder="********" required>
+                                    <input type="password" name="password" class="form-control" value="{{old('password', $admin->user->password)}}" required>
                                 </div>
-                                <input type="hidden" name="rol" value="admin">
                             </div>
                         </div>
 
@@ -36,15 +35,15 @@
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Nombre(s)</label>
-                                    <input type="text" name="name" class="form-control" required>
+                                    <input type="text" name="name" class="form-control" value="{{old('name', $admin->person->name)}}" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Apellidos</label>
-                                    <input type="text" name="last_name" class="form-control" required>
+                                    <input type="text" name="last_name" class="form-control" value="{{old('last_name', $admin->person->last_name)}}" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">RFC</label>
-                                    <input type="text" name="rfc" class="form-control" placeholder="ABCD123456XYZ" required>
+                                    <input type="text" name="rfc" class="form-control" value="{{old('rfc', $admin->person->rfc)}}" required>
                                     @error('rfc')
                                         <span style="color: red;">{{ $message }}</span>
                                     @enderror

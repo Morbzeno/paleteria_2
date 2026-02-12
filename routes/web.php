@@ -8,18 +8,12 @@ Route::get('/', function () {
     return view('Admin_form');
 });
 
-Route::get('/administradores/nuevo', function(){
-    return view('Admin_form');
-})->name('admins.create');
+// Rutas de Clientes
+Route::get('/clients/nuevo', [ClientController::class, 'create'])->name('client.create');
+Route::post('/client', [ClientController::class, 'store'])->name('clients.store');
 
-Route::get('/clients/nuevo', function(){
-    return view('clients/Client_form');
-})->name('client.create');
-
-Route::POST('/client', [ClientController::class, 'store'])->name('clients.store');
-
-Route::POST('/admin', [AdminController::class, 'store'])->name('admins.store');
-
+// Rutas de Admins (Resource ya incluye index, create, store, edit, update, destroy)
+Route::resource('admins', AdminController::class);
 // Auth::routes();
 
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
