@@ -29,13 +29,7 @@ class ClientController extends Controller
     }
 
     public function show($id){
-        $Client = Client::with(['user','person', 'direction'])->findOrFail($id)->get();
-
-        if($Client->isEmpty()){
-            return response()->json([
-                'message' => 'no se encontro al Client',
-                ],400);
-        }
+        $Client = Client::with(['user', 'person', 'direction'])->findOrFail($id);
 
         return response()->json([
             'message' => 'datos del Client',
@@ -138,23 +132,7 @@ class ClientController extends Controller
         try {
             return DB::transaction(function () use ($request, $Client){
         
-                if ($request->hasAny(['email', 'password', 'rol'])) {
-                    $userData = $request->only(['email', 'rol']);
-                    if ($request->has('password')) {
-                        $userData['password'] = bcrypt($request->password);
-                    }
-                    $Client->user->update($userData);
-                }
-    
-                if ($request->hasAny(['name', 'last_name', 'rfc', 'phone_number'])) {
-                    $Client->person->update($request->only(['name', 'last_name', 'rfc', 'phone_number']));
-                }
-    
-                if ($request->hasAny(['street', 'colony', 'city', 'postal_code'])) {
-                    $Client->direction->update($request->only(['street', 'colony', 'city', 'postal_code']));
-                }
-    
-                $Client->update($request->only(['Client_type']));
+                $Client->update($request->all());
 
                 return response()->json([
                     'message' => 'User actualizado correctamente',

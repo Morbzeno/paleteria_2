@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Inventory extends Model
 {
+    use SoftDeletes;
     protected $table = 'inventory';
     protected $fillable= ['stock'];
     protected $primaryKey = 'inventory_id';

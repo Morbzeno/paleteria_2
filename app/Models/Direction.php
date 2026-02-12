@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Direction extends Model
 {
+
+    use SoftDeletes;
+    
     protected $table = 'directions';
     protected $fillable= ['street', 'colony', 'city', 'postal_code'];
     protected $primaryKey = 'direction_id';
@@ -16,7 +19,7 @@ class Direction extends Model
     }
 
     public function client(){
-        return $this->hasOne(Client::class);
+        return $this->hasOne(Client::class, 'direction_id', 'direction_id');
     }
 
 }

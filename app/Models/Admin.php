@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Admin extends Model
 {
+    use SoftDeletes;
     protected $table = 'admins';
     protected $fillable = ['user_id', 'person_id', 'direction_id', 'payment', 'schedule', 'admin_type'];
     protected $primaryKey = 'admin_id';

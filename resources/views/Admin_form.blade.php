@@ -18,7 +18,11 @@
                                 <div class="col-md-6">
                                     <label class="form-label">Correo Electrónico</label>
                                     <input type="email" name="email" class="form-control" placeholder="ejemplo@correo.com" required>
+                                    @error('email')
+                                        <span style="color: red;">{{ $message }}</span>
+                                    @enderror
                                 </div>
+                                
                                 <div class="col-md-6">
                                     <label class="form-label">Contraseña</label>
                                     <input type="password" name="password" class="form-control" placeholder="********" required>
@@ -41,10 +45,16 @@
                                 <div class="col-md-6">
                                     <label class="form-label">RFC</label>
                                     <input type="text" name="rfc" class="form-control" placeholder="ABCD123456XYZ" required>
+                                    @error('rfc')
+                                        <span style="color: red;">{{ $message }}</span>
+                                    @enderror
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Número de Celular</label>
                                     <input type="text" name="phone_number" class="form-control" required>
+                                    @error('phone_number')
+                                        <span style="color: red;"> {{$message}}</span>
+                                    @enderror
                                 </div>
                             </div>
                         </div>

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 class AdminController extends Controller
 {
     public function index(Request $request){
-        // $admins = admin::findOrFail()->get();
+        // $admins = admin::find()->get();
         $admins = Admin::with(['user','person', 'direction'])->get();
 
         if($admins->isEmpty()){
@@ -28,12 +28,12 @@ class AdminController extends Controller
     }
 
     public function show($id){
-        $admin = Admin::with(['user','person', 'direction'])->findOrFail($id)->get();
+        $admin = Admin::with(['user','person', 'direction'])->find($id);
 
-        if($admin->isEmpty()){
+        if(!$admin){
             return response()->json([
-                'message' => 'no se encontro al admin',
-                ],400);
+                'message' => 'Admin no encontrado'
+            ], 404);
         }
 
         return response()->json([
@@ -44,13 +44,13 @@ class AdminController extends Controller
 
     public function store(Request $request){
         $request->validate([
-            'email' => 'required|string|email',
+            'email' => 'required|string|email|unique:users,email',
             'password' => 'required|string',
             'rol' => 'required',
             'name' => 'required|string', 
             'last_name' => 'required|string',
-            'rfc' => 'required|string',
-            'phone_number' => 'required|string',
+            'rfc' => 'required|string|unique:persons,rfc',
+            'phone_number' => 'required|string|unique:persons,phone_number',
             'street' => 'required|string', 
             'colony' => 'required|string',
             'city' => 'required|string',
@@ -143,23 +143,7 @@ class AdminController extends Controller
         try {
             return DB::transaction(function () use ($request, $admin){
         
-                if ($request->hasAny(['email', 'password', 'rol'])) {
-                    $userData = $request->only(['email', 'rol']);
-                    if ($request->has('password')) {
-                        $userData['password'] = bcrypt($request->password);
-                    }
-                    $admin->user->update($userData);
-                }
-    
-                if ($request->hasAny(['name', 'last_name', 'rfc', 'phone_number'])) {
-                    $admin->person->update($request->only(['name', 'last_name', 'rfc', 'phone_number']));
-                }
-    
-                if ($request->hasAny(['street', 'colony', 'city', 'postal_code'])) {
-                    $admin->direction->update($request->only(['street', 'colony', 'city', 'postal_code']));
-                }
-    
-                $admin->update($request->only(['payment', 'schedule', 'admin_type']));
+                $admin->update($request->all());
 
                 return response()->json([
                     'message' => 'User actualizado correctamente',
@@ -172,5 +156,19 @@ class AdminController extends Controller
                 'error' => $e->getMessage()
             ],500);
         }
+    }
+    public function destroy($id){
+        $admin = Admin::find($id);
+
+        if(!$admin){
+            return response()->json([
+                'message' => 'Admin no encontrado'
+            ], 404);
+        }
+        
+        $admin->delete();
+        return response()->json([
+            'message' => 'Admin eliminado correctamente'
+        ], 200);
     }
 }
