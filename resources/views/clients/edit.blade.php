@@ -6,18 +6,18 @@
         <div class="col-md-10 col-lg-8">
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-primary text-white py-3">
-                    <h4 class="mb-0"><i class="fas fa-user-shield me-2"></i>Registro de Administrador</h4>
+                    <h4 class="mb-0"><i class="fas fa-user-shield me-2"></i>Registro de cliente</h4>
                 </div>
                 <div class="card-body p-4">
-                    <form action="{{ route('admins.store', $admin->admin_id) }}" method="POST">
+                    <form action="{{ route('clients.update', $client->client_id) }}" method="POST">
                         @csrf
-
+                        @method('PUT')
                         <div class="mb-4">
                             <h5 class="text-secondary border-bottom pb-2">Datos de Acceso</h5>
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Correo Electrónico</label>
-                                    <input type="email" name="email" class="form-control" placeholder="ejemplo@correo.com" required>
+                                    <input type="email" name="email" class="form-control" value="{{old('email',$client->user->email)}}" required >
                                     @error('email')
                                         <span style="color: red;">{{ $message }}</span>
                                     @enderror
@@ -25,9 +25,8 @@
                                 
                                 <div class="col-md-6">
                                     <label class="form-label">Contraseña</label>
-                                    <input type="password" name="password" class="form-control" placeholder="********" required>
+                                    <input type="password" name="password" class="form-control" placeholder="se puede omitir este pasoi" >
                                 </div>
-                                <input type="hidden" name="rol" value="admin">
                             </div>
                         </div>
 
@@ -36,22 +35,22 @@
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Nombre(s)</label>
-                                    <input type="text" name="name" class="form-control" required>
+                                    <input type="text" name="name" class="form-control" value="{{old('name', $client->person->name)}}" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Apellidos</label>
-                                    <input type="text" name="last_name" class="form-control" required>
+                                    <input type="text" name="last_name" class="form-control" value="{{old('last_name', $client->person->last_name)}}" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">RFC</label>
-                                    <input type="text" name="rfc" class="form-control" placeholder="ABCD123456XYZ" required>
+                                    <input type="text" name="rfc" class="form-control" value="{{old('rfc', $client->person->rfc)}}" required>
                                     @error('rfc')
                                         <span style="color: red;">{{ $message }}</span>
                                     @enderror
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Número de Celular</label>
-                                    <input type="text" name="phone_number" class="form-control" required>
+                                    <input type="text" name="phone_number" class="form-control" value="{{old('phone_number', $client->person->phone_number)}}" required>
                                     @error('phone_number')
                                         <span style="color: red;"> {{$message}}</span>
                                     @enderror
@@ -64,50 +63,40 @@
                             <div class="row g-3">
                                 <div class="col-md-8">
                                     <label class="form-label">Calle y Número</label>
-                                    <input type="text" name="street" class="form-control" required>
+                                    <input type="text" name="street" class="form-control" value="{{old('street', $client->direction->street)}}" required>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Código Postal</label>
-                                    <input type="text" name="postal_code" class="form-control" required>
+                                    <input type="text" name="postal_code" class="form-control" value="{{old('postal_code', $client->direction->postal_code)}}" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Colonia</label>
-                                    <input type="text" name="colony" class="form-control" required>
+                                    <input type="text" name="colony" class="form-control" value="{{old('colony', $client->direction->colony)}}" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Ciudad</label>
-                                    <input type="text" name="city" class="form-control" required>
+                                    <input type="text" name="city" class="form-control" value="{{old('city', $client->direction->city)}}" required>
                                 </div>
                             </div>
                         </div>
 
                         <div class="mb-4">
-                            <h5 class="text-secondary border-bottom pb-2">Detalles Administrativos</h5>
+                            <h5 class="text-secondary border-bottom pb-2">Detalles clientistrativos</h5>
                             <div class="row g-3">
-                                <div class="col-md-4">
-                                    <label class="form-label">Pago Mensual</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">$</span>
-                                        <input type="number" name="payment" class="form-control" step="0.01" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Horario</label>
-                                    <input type="text" name="schedule" class="form-control" placeholder="08:00 - 16:00" required>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Tipo de Admin</label>
-                                    <select name="admin_type" class="form-select">
-                                        <option value="normal" selected>Normal</option>
-                                        <option value="super">Super</option>
-                                    </select>
-                                </div>
-                            </div>
+                              <div class="col-md-4">
+                                  <label class="form-label">Tipo de cliente</label>
+                                  <select name="client_type" class="form-select">
+                                      <option value="normal" selected>Normal</option>
+                                      <option value="wholesarer">wholesare</option>
+                                  </select>
+                              </div>
+                          </div>
+                          
                         </div>
 
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                             <button type="reset" class="btn btn-light me-md-2">Limpiar</button>
-                            <button type="submit" class="btn btn-primary px-5 shadow-sm">Guardar Administrador</button>
+                            <button type="submit" class="btn btn-primary px-5 shadow-sm">Guardar cliente</button>
                         </div>
                     </form>
                 </div>

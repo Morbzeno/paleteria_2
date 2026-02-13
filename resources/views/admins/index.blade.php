@@ -1,3 +1,5 @@
+@extends('layouts.app')
+@section('content')
 <h1>Lista de Administradores</h1>
 
 <table>
@@ -9,6 +11,7 @@
         </tr>
     </thead>
     <tbody>
+        <a href="{{ route('admins.create') }}">crear admins</a>
         @foreach ($admins as $admin)
         <tr>
             <td>{{ $admin->person->nombre ?? 'Sin nombre' }}</td>
@@ -28,3 +31,4 @@
 </table>
 
 {{ $admins->links() }}
+@endsection

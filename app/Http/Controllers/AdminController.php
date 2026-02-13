@@ -44,6 +44,9 @@ class AdminController extends Controller
         ],200);
     }
 
+    public function create(){
+        return view('admins.create');
+    }
     public function store(Request $request){
         $request->validate([
             'email' => 'required|string|email|unique:users,email',
@@ -103,10 +106,12 @@ class AdminController extends Controller
                 ]);
                 $admin->save();
 
-                return response()->json([
-                    'message' => 'User actualizado correctamente',
-                    'data' => $admin
-                ], 200);
+                // return response()->json([
+                //     'message' => 'User actualizado correctamente',
+                //     'data' => $admin
+                // ], 200);
+                $admins = Admin::with(['user','person', 'direction'])->paginate(10);
+                return view('admins.index', compact('admins'));
             });
         } catch (\Exception $e) {
             return response()->json([
@@ -154,11 +159,15 @@ class AdminController extends Controller
             return DB::transaction(function () use ($request, $admin){
         
                 $admin->update($request->all());
+                $admin->password = Hash::make($request->password);
+                $admin->save();
 
-                return response()->json([
-                    'message' => 'User actualizado correctamente',
-                    'data' => $admin
-                ], 200);
+                // return response()->json([
+                //     'message' => 'User actualizado correctamente',
+                //     'data' => $admin
+                // ], 200);
+
+                return view('admins.edit', compact('admin'));
             });
         } catch (\Exception $e) {
             return response()->json([

@@ -41,7 +41,10 @@
                         <!-- Authentication Links -->
                         @guest
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admins.create') }}">Crear Administrador</a>
+                            <a class="nav-link" href="{{ route('admins.index') }}">administradores</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('clients.index') }}">clientes</a>
                         </li>
                             @if (Route::has('login'))
                                 <li class="nav-item">

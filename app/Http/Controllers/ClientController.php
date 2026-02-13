@@ -14,27 +14,33 @@ class ClientController extends Controller
 {
     public function index(Request $request){
         // $Clients = Client::findOrFail()->get();
-        $Clients = Client::with(['user','person', 'direction'])->get();
+        $clients = Client::with(['user','person', 'direction'])->paginate(10);
 
-        if($Clients->isEmpty()){
-            return response()->json([
-                'message' => 'no se encontraron Client',
-                ],400);
-        }
+        // if($clients->isEmpty()){
+        //     return response()->json([
+        //         'message' => 'no se encontraron Client',
+        //         ],400);
+        // }
 
-        return response()->json([
-            'message' => 'Todos los Clients aquí',
-            'data' => $Clients
-        ],200);
+        return view('clients.index', compact('clients'));
+        // return response()->json([
+        //     'message' => 'Todos los Clients aquí',
+        //     'data' => $Clients
+        // ],200);
     }
 
     public function show($id){
         $Client = Client::with(['user', 'person', 'direction'])->findOrFail($id);
 
-        return response()->json([
-            'message' => 'datos del Client',
-            'data' => $Client
-        ],200);
+        // return response()->json([
+        //     'message' => 'datos del Client',
+        //     'data' => $Client
+        // ],200);
+        
+    }
+
+    public function create(){
+        return view('clients.create');
     }
 
     public function store(Request $request){
@@ -92,10 +98,13 @@ class ClientController extends Controller
                 ]);
                 $Client->save();
 
-                return response()->json([
-                    'message' => 'User actualizado correctamente',
-                    'data' => $Client
-                ], 200);
+                // return response()->json([
+                //     'message' => 'User actualizado correctamente',
+                //     'data' => $Client
+                // ], 200);
+                $clients = Client::with(['user','person', 'direction'])->paginate(10);
+
+                return view('clients.index', compact('clients'));
             });
         } catch (\Exception $e) {
             return response()->json([
@@ -108,9 +117,9 @@ class ClientController extends Controller
     public function update(Request $request, $id)
     {
         //busca al usuario, si no encuentra manda error
-        $Client = Client::with(['user', 'person', 'direction'])->find($id);
+        $client = Client::with(['user', 'person', 'direction'])->find($id);
 
-        if (!$Client) {
+        if (!$client) {
             return response()->json(['error' => 'Client no encontrado'], 404);
         }
         // los datos que se pueden alterar, esta en "sometimes" para que puedas modificar los campos que quieras, 
@@ -130,15 +139,21 @@ class ClientController extends Controller
             'client_type' => 'required',
         ]);
         try {
-            return DB::transaction(function () use ($request, $Client){
+            return DB::transaction(function () use ($request, $client){
         
-                $Client->update($request->all());
+                $client->update($request->all());
 
-                return response()->json([
-                    'message' => 'User actualizado correctamente',
-                    'data' => $Client
-                ], 200);
+                $admin->password = Hash::make($request->password);
+                $client->save();
+
+                // return response()->json([
+                //     'message' => 'User actualizado correctamente',
+                //     'data' => $Client
+                // ], 200);
+
+                return view('clients.edit', compact('client'));
             });
+            
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error al procesar el registro',
@@ -146,4 +161,28 @@ class ClientController extends Controller
             ],500);
         }
     }
+
+    public function edit($id){
+        $client = Client::with(['user', 'person', 'direction'])->findOrFail($id);
+
+        return view('clients.edit', compact('client'));
+    }
+
+    public function destroy($id){
+        $client = Client::find($id);
+
+        if(!$client){
+            return response()->json([
+                'message' => 'client no encontrado'
+            ], 404);
+        }
+        
+        $client->delete();
+
+        return redirect()->route('clients.index')->with('success', 'cliente eliminado correctamente.');
+        // return response()->json([
+        //     'message' => 'client eliminado correctamente'
+        // ], 200);
+    }
+
 }

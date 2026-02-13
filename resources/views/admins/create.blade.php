@@ -9,15 +9,15 @@
                     <h4 class="mb-0"><i class="fas fa-user-shield me-2"></i>Registro de Administrador</h4>
                 </div>
                 <div class="card-body p-4">
-                    <form action="{{ route('admins.update', $admin->admin_id) }}" method="POST">
+                    <form action="{{ route('admins.store') }}" method="POST">
                         @csrf
-                        @method('PUT')
+
                         <div class="mb-4">
                             <h5 class="text-secondary border-bottom pb-2">Datos de Acceso</h5>
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Correo Electrónico</label>
-                                    <input type="email" name="email" class="form-control" value="{{old('email',$admin->user->email)}}" required >
+                                    <input type="email" name="email" class="form-control" placeholder="ejemplo@correo.com" required>
                                     @error('email')
                                         <span style="color: red;">{{ $message }}</span>
                                     @enderror
@@ -25,8 +25,9 @@
                                 
                                 <div class="col-md-6">
                                     <label class="form-label">Contraseña</label>
-                                    <input type="password" name="password" class="form-control" placeholder="se puede omitir este pasoi" >
+                                    <input type="password" name="password" class="form-control" placeholder="********" required>
                                 </div>
+                                <input type="hidden" name="rol" value="admin">
                             </div>
                         </div>
 
@@ -35,22 +36,22 @@
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Nombre(s)</label>
-                                    <input type="text" name="name" class="form-control" value="{{old('name', $admin->person->name)}}" required>
+                                    <input type="text" name="name" class="form-control" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Apellidos</label>
-                                    <input type="text" name="last_name" class="form-control" value="{{old('last_name', $admin->person->last_name)}}" required>
+                                    <input type="text" name="last_name" class="form-control" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">RFC</label>
-                                    <input type="text" name="rfc" class="form-control" value="{{old('rfc', $admin->person->rfc)}}" required>
+                                    <input type="text" name="rfc" class="form-control" placeholder="ABCD123456XYZ" required>
                                     @error('rfc')
                                         <span style="color: red;">{{ $message }}</span>
                                     @enderror
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Número de Celular</label>
-                                    <input type="text" name="phone_number" class="form-control" value="{{old('phone_number', $admin->person->phone_number)}}" required>
+                                    <input type="text" name="phone_number" class="form-control" required>
                                     @error('phone_number')
                                         <span style="color: red;"> {{$message}}</span>
                                     @enderror
@@ -63,19 +64,19 @@
                             <div class="row g-3">
                                 <div class="col-md-8">
                                     <label class="form-label">Calle y Número</label>
-                                    <input type="text" name="street" class="form-control" value="{{old('street', $admin->direction->street)}}" required>
+                                    <input type="text" name="street" class="form-control" required>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Código Postal</label>
-                                    <input type="text" name="postal_code" class="form-control" value="{{old('postal_code', $admin->direction->postal_code)}}" required>
+                                    <input type="text" name="postal_code" class="form-control" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Colonia</label>
-                                    <input type="text" name="colony" class="form-control" value="{{old('colony', $admin->direction->colony)}}" required>
+                                    <input type="text" name="colony" class="form-control" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Ciudad</label>
-                                    <input type="text" name="city" class="form-control" value="{{old('city', $admin->direction->city)}}" required>
+                                    <input type="text" name="city" class="form-control" required>
                                 </div>
                             </div>
                         </div>
@@ -87,17 +88,17 @@
                                     <label class="form-label">Pago Mensual</label>
                                     <div class="input-group">
                                         <span class="input-group-text">$</span>
-                                        <input type="number" name="payment" class="form-control" step="0.01" value="{{old('payment', $admin->payment)}}" required>
+                                        <input type="number" name="payment" class="form-control" step="0.01" required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Horario</label>
-                                    <input type="text" name="schedule" class="form-control" value="{{old('schedule', $admin->schedule)}}" required>
+                                    <input type="text" name="schedule" class="form-control" placeholder="08:00 - 16:00" required>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Tipo de Admin</label>
                                     <select name="admin_type" class="form-select">
-                                        <option value="normal">Normal</option>
+                                        <option value="normal" selected>Normal</option>
                                         <option value="super">Super</option>
                                     </select>
                                 </div>
