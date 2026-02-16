@@ -15,11 +15,11 @@ class AdminController extends Controller
         // $admins = admin::find()->get();
         $admins = Admin::with(['user','person', 'direction'])->paginate(10);
 
-        if($admins->isEmpty()){
-            return response()->json([
-                'message' => 'no se encontraron admin',
-                ],400);
-        }
+        // if($admins->isEmpty()){
+        //     return response()->json([
+        //         'message' => 'no se encontraron admin',
+        //         ],400);
+        // }
 
         // return response()->json([
         //     'message' => 'Todos los admins aquí',
@@ -129,53 +129,48 @@ class AdminController extends Controller
         return view('admins.edit', compact('admin'));
     }
 
-    public function update(Request $request, $id)
-    {
-        //busca al usuario, si no encuentra manda error
-        $admin = Admin::with(['user', 'person', 'direction'])->find($id);
+public function update(Request $request, $id)
+{
+    $admin = Admin::with(['user', 'person', 'direction'])->findOrFail($id);
 
-        if (!$admin) {
-            return response()->json(['error' => 'admin no encontrado'], 404);
-        }
-        // los datos que se pueden alterar, esta en "sometimes" para que puedas modificar los campos que quieras, 
-        // y los demas queden como estaban
-        $request->validate([
-            'email' => 'sometimes|string|email',
-            'password' => 'sometimes|string',
-            'rol' => 'sometimes',
-            'name' => 'sometimes|string', 
-            'last_name' => 'sometimes|string',
-            'rfc' => 'sometimes|string',
-            'phone_number' => 'sometimes|string',
-            'street' => 'sometimes|string', 
-            'colony' => 'sometimes|string',
-            'city' => 'sometimes|string',
-            'postal_code' => 'sometimes|string',
-            'payment' => 'sometimes',
-            'schedule' => 'sometimes|string',
-            'admin_type' => 'sometimes',
-        ]);
-        try {
-            return DB::transaction(function () use ($request, $admin){
-        
-                $admin->update($request->all());
-                $admin->password = Hash::make($request->password);
-                $admin->save();
+    $request->validate([
+        'email' => 'sometimes|email',
+        'password' => 'nullable|min:6',
+        'name' => 'sometimes|string', 
+        'last_name' => 'sometimes|string',
+        'rfc' => 'sometimes|string',
+        'phone_number' => 'sometimes|string',
+        'street' => 'sometimes|string', 
+        'colony' => 'sometimes|string',
+        'city' => 'sometimes|string',
+        'postal_code' => 'sometimes|string',
+        'payment' => 'sometimes|numeric',
+        'schedule' => 'sometimes|string',
+        'admin_type' => 'sometimes|string',
+    ]);
 
-                // return response()->json([
-                //     'message' => 'User actualizado correctamente',
-                //     'data' => $admin
-                // ], 200);
+    try {
+        return DB::transaction(function () use ($request, $admin) {
+            
+            $userData = $request->only(['email']);
+            if ($request->filled('password')) {
+                $userData['password'] = bcrypt($request->password);
+            }
+            $admin->user->update($userData);
 
-                return view('admins.edit', compact('admin'));
-            });
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error al procesar el registro',
-                'error' => $e->getMessage()
-            ],500);
-        }
+            $admin->person->update($request->only(['name', 'last_name', 'rfc', 'phone_number']));
+
+            $admin->direction->update($request->only(['street', 'colony', 'city', 'postal_code']));
+
+            $admin->update($request->only(['payment', 'schedule', 'admin_type']));
+
+            return redirect()->route('admins.index')->with('success', 'Administrador actualizado correctamente');
+        });
+
+    } catch (\Exception $e) {
+        return back()->withInput()->withErrors(['error' => 'Error al actualizar: ' . $e->getMessage()]);
     }
+}
     public function destroy($id){
         $admin = Admin::find($id);
 

@@ -7,7 +7,7 @@
             <div class="card shadow-sm border-0">
                 
                 <!-- Header -->
-                <div class="card-header bg-primary text-white py-3 d-flex justify-content-between align-items-center">
+                <div class="card-header bg-success text-white py-3 d-flex justify-content-between align-items-center">
                     <h4 class="mb-0">
                         <i class="fas fa-users me-2"></i>Lista de Clientes
                     </h4>

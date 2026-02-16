@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-10 col-lg-8">
             <div class="card shadow-sm border-0">
-                <div class="card-header bg-primary text-white py-3">
+                <div class="card-header bg-success text-white py-3">
                     <h4 class="mb-0"><i class="fas fa-user-shield me-2"></i>Registro de cliente</h4>
                 </div>
                 <div class="card-body p-4">

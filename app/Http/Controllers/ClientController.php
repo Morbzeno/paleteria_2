@@ -114,57 +114,52 @@ class ClientController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
-    {
-        //busca al usuario, si no encuentra manda error
-        $client = Client::with(['user', 'person', 'direction'])->find($id);
+public function update(Request $request, $id)
+{
+    $client = client::with(['user', 'person', 'direction'])->findOrFail($id);
 
-        if (!$client) {
-            return response()->json(['error' => 'Client no encontrado'], 404);
-        }
-        // los datos que se pueden alterar, esta en "sometimes" para que puedas modificar los campos que quieras, 
-        // y los demas queden como estaban
-        $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-            'rol' => 'required',
-            'name' => 'required|string', 
-            'last_name' => 'required|string',
-            'rfc' => 'required|string',
-            'phone_number' => 'required|string',
-            'street' => 'required|string', 
-            'colony' => 'required|string',
-            'city' => 'required|string',
-            'postal_code' => 'required|string',
-            'client_type' => 'required',
-        ]);
-        try {
-            return DB::transaction(function () use ($request, $client){
-        
-                $client->update($request->all());
+    $request->validate([
+        'email' => 'sometimes|email',
+        'password' => 'nullable|min:6', // Usamos nullable para que no obligue si viene vacío
+        'name' => 'sometimes|string', 
+        'last_name' => 'sometimes|string',
+        'rfc' => 'sometimes|string',
+        'phone_number' => 'sometimes|string',
+        'street' => 'sometimes|string', 
+        'colony' => 'sometimes|string',
+        'city' => 'sometimes|string',
+        'postal_code' => 'sometimes|string',
+        'client_type' => 'sometimes|string'
+    ]);
 
-                $admin->password = Hash::make($request->password);
-                $client->save();
-
-                // return response()->json([
-                //     'message' => 'User actualizado correctamente',
-                //     'data' => $Client
-                // ], 200);
-
-                return view('clients.edit', compact('client'));
-            });
+    try {
+        return DB::transaction(function () use ($request, $client) {
             
+            $userData = $request->only(['email']);
+            if ($request->filled('password')) {
+                $userData['password'] = bcrypt($request->password);
+            }
+            $client->user->update($userData);
+
+            $client->person->update($request->only(['name', 'last_name', 'rfc', 'phone_number']));
+
+            $client->direction->update($request->only(['street', 'colony', 'city', 'postal_code']));
+
+            $client->update($request->only(['client_type']));
+
+            return redirect()->route('clients.index')->with('success', 'cliente actualizado correctamente');
+        });
+
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error al procesar el registro',
-                'error' => $e->getMessage()
-            ],500);
+            return back()->withInput()->withErrors(['error' => 'Error al actualizar: ' . $e->getMessage()]);
         }
     }
 
-    public function edit($id){
-        $client = Client::with(['user', 'person', 'direction'])->findOrFail($id);
+        public function edit($id)
+    {
+        $client = Client::with(['user', 'person', 'direction'])->find($id);
 
+   
         return view('clients.edit', compact('client'));
     }
 
