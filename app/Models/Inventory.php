@@ -9,10 +9,10 @@ class Inventory extends Model
 {
     use SoftDeletes;
     protected $table = 'inventory';
-    protected $fillable= ['stock'];
+    protected $fillable= ['stock', 'ingredient_id'];
     protected $primaryKey = 'inventory_id';
 
     public function ingredient(){
-        return $this->belongsTo(Ingredient::class);
+        return $this->belongsTo(Ingredient::class, 'ingredient_id', 'ingredient_id');
     }
 }

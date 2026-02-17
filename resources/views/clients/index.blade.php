@@ -38,7 +38,7 @@
                                 @forelse ($clients as $client)
                                     <tr>
                                         <td>
-                                            {{ optional($client->person)->nombre ?? 'Sin nombre' }}
+                                            {{ optional($client->person)->name ?? 'Sin nombre' }}
                                         </td>
                                         <td>
                                             {{ optional($client->user)->email ?? 'Sin email' }}

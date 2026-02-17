@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Supply extends Model
 {
     use SoftDeletes;
-    protected $table = 'supplies';
+    protected $table = 'suppliers';
     protected $fillable= ['name', 'phone_number', 'description', 'last_supply'];
     protected $primaryKey = 'suppy_id';
 
     public function ingredients(){
-        return $this->hasMany(Ingredients::class);
+        return $this->hasMany(Ingredient::class);
     }
 }
