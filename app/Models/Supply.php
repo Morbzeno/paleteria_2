@@ -10,7 +10,7 @@ class Supply extends Model
     use SoftDeletes;
     protected $table = 'suppliers';
     protected $fillable= ['name', 'phone_number', 'description', 'last_supply'];
-    protected $primaryKey = 'suppy_id';
+    protected $primaryKey = 'supplier_id';
 
     public function ingredients(){
         return $this->hasMany(Ingredient::class);

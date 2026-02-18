@@ -6,12 +6,16 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\IngredientController;
+use App\Http\Controllers\SupplyController;
 
 Route::POST('/ingredient', [IngredientController::class, 'store']);
 Route::GET('/ingredient', [IngredientController::class, 'index']);
 Route::GET('/ingredient/{id}', [IngredientController::class, 'show']);
 Route::PUT('/ingredient/{id}', [IngredientController::class, 'update']);
 Route::DELETE('/ingredient/{id}', [IngredientController::class, 'destroy']);
+
+// Route::Resource('supply', SupplyController::class);
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
