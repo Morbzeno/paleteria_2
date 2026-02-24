@@ -33,3 +33,5 @@ Route::PUT('/client/{id}', [ClientController::class, 'update']);
 Route::GET('/client', [ClientController::class, 'index']);
 Route::GET('/client/{id}', [ClientController::class, 'show']);
 Route::PUT('/admin/{id}', [AdminController::class, 'update']);
+
+Route::GET('getImage/{filename}', [IngredientController::class, 'getImage']);

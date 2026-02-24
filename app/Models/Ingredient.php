@@ -10,7 +10,7 @@ class Ingredient extends Model
     use SoftDeletes;
     
     protected $table = 'ingredients';
-    protected $fillable= ['name', 'description', 'price', 'supplier_id'];
+    protected $fillable= ['name', 'description', 'price', 'supplier_id', 'image', 'video_path'];
     protected $primaryKey = 'ingredient_id';
 
     public function order_detail(){

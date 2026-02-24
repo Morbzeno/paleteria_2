@@ -18,6 +18,11 @@ return new class extends Migration
             $table->string('name')->nullable(false);
             $table->string('description')->nullable(false);
             $table->decimal('price', total: 8, places: 2)->nullable(false);  
+            
+
+           $table->string('title', 100);
+           $table->string('image', 100);
+           $table->string('video_path', 100);
 
             $table->timestamps();
             $table->softDeletes();

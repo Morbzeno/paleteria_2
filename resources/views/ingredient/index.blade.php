@@ -11,7 +11,7 @@
                     <h4 class="mb-0">
                         <i class="fas fa-users me-2"></i>Lista de proveedores
                     </h4>
-                    <a href="{{ route('supply.create') }}" class="btn btn-light btn-sm shadow-sm">
+                    <a href="{{ route('ingredient.create') }}" class="btn btn-light btn-sm shadow-sm">
                         <i class="fas fa-plus me-1"></i> Nuevo proveedor
                     </a>
                 </div>
@@ -36,24 +36,19 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($supplies as $supply)
+                                @forelse ($ingredients as $ingredient)
                                     <tr>
                                         <td>
-                                            {{ optional($supply)->name ?? 'Sin nombre' }}
-                                        </td>
-                                        <td>
-                                            {{ optional($supply)->last_supply ?? 'sin entregas' }}
-                                        </td>
-                                        <td>
-                                            {{optional($supply)->phone_number ?? 'sin numero'}}
+                                           <img src="http://127.0.0.1:8000/api/getImage/{{ optional($ingredient)->image ?? 'Sin nombre' }}" alt=""> 
+                                           "{{ optional($ingredient)->image ?? 'Sin nombre' }}"
                                         </td>
                                         <td class="text-center">
-                                            <a href="{{ route('supply.edit', $supply->supplier_id) }}" 
+                                            <a href="{{ route('ingredient.edit', $ingredient->ingredient_id) }}" 
                                                class="btn btn-sm btn-warning me-2">
                                                 <i class="fas fa-edit"></i>
                                             </a>
 
-                                            <form action="{{ route('supply.destroy', $supply->supplier_id) }}" 
+                                            <form action="{{ route('ingredient.destroy', $ingredient->ingredient_id) }}" 
                                                   method="POST" 
                                                   class="d-inline">
                                                 @csrf
@@ -69,7 +64,7 @@
                                 @empty
                                     <tr>
                                         <td colspan="3" class="text-center text-muted py-4">
-                                            No hay supplyes registrados
+                                            No hay ingredientes registrados
                                         </td>
                                     </tr>
                                 @endforelse
@@ -79,8 +74,8 @@
 
                     <!-- Paginación -->
                     <div class="d-flex justify-content-center mt-4">
-                        {{ $supplies->links() }}
-                    </div>
+                        {{ $ingredients->links() }}
+                    </div>   
 
                 </div>
             </div>
