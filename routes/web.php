@@ -16,11 +16,10 @@ Route::resource('admins', AdminController::class);
 // Rutas de Clientes
 Route::get('/clients/nuevo', [ClientController::class, 'create'])->name('client.create');
 
-
 // Rutas de Admins (Resource ya incluye index, create, store, edit, update, destroy)
 
 Route::resource('supply', SupplyController::class);
-Route::resource('ingredient', IngredientController::class);
+Route::resource('ingredients', IngredientController::class);
 Route::resource('clients', ClientController::class);
 Route::GET('getImage/{filename}', [IngredientController::class, 'getImage']);
 // Auth::routes();

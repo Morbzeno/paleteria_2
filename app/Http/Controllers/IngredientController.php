@@ -18,11 +18,11 @@ class IngredientController extends Controller
         // $ingredients = ingredient::findOrFail()->get();
         $ingredients = Ingredient::with('inventory')->with('suppliers')->paginate(10);
 
-        if($ingredients->isEmpty()){
-            return response()->json([
-                'message' => 'no se encontraron ingredient',
-                ],400);
-        }
+        // if($ingredients->isEmpty()){
+        //     return response()->json([
+        //         'message' => 'no se encontraron ingredient',
+        //         ],400);
+        // }
 
         return view('ingredient.index', compact('ingredients'));
         // return response()->json([
@@ -46,9 +46,7 @@ class IngredientController extends Controller
             'data' => $ingredient
         ],200);
     }
-
-    public function store(Request $request){
-
+public function store(Request $request) {
     $request->validate([
         "name" => "string|required",
         "description" => "string|required",
@@ -57,29 +55,25 @@ class IngredientController extends Controller
         'image' => 'required|mimes:jpg,jpeg,png,gif',
         'video_path' => 'required|mimes:mp4'
     ]);
-    try{
-        return DB::transaction(function () use ($request){
 
-            
-            $supplier = 1;
+    try {
+        DB::transaction(function () use ($request) {
             $ingredient = Ingredient::create([
-                'supplier_id' => $supplier,
+                'supplier_id' => $request->supplier,
                 'name' => $request->name,
                 'description' => $request->description,
                 'price' => $request->price,                   
             ]);
             
-            $image = $request->file('image');
-            if ($image) {
-
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
                 $image_path = time() . $image->getClientOriginalName();
                 Storage::disk('images')->put($image_path, File::get($image));
                 $ingredient->image = $image_path;
             }
-            $ingredient->save();
- 
-            $video_file = $request->file('video_path');
-            if ($video_file) {
+
+            if ($request->hasFile('video_path')) {
+                $video_file = $request->file('video_path');
                 $video_path = time() . $video_file->getClientOriginalName();
                 Storage::disk('videos')->put($video_path, File::get($video_file));
                 $ingredient->video_path = $video_path;
@@ -87,20 +81,34 @@ class IngredientController extends Controller
 
             $ingredient->save();
 
-            $inventory = Inventory::create([
+            Inventory::create([
                 'ingredient_id' => $ingredient->ingredient_id,
                 'stock' => $request->stock
             ]);
-            $inventory->save();
-
         });
+
+        // CAMBIO CLAVE: Redirect en lugar de View
+        return redirect()->route('ingredients.index')->with('message', 'Ingrediente creado con éxito');
+
     } catch(\Exception $e) {
-            return response()->json([
-                'message' => 'Error al procesar el registro',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+        return back()->withInput()->withErrors(['error' => $e->getMessage()]);
     }
+}
+
+public function destroy($id) {
+    $ingredient = Ingredient::find($id);
+    
+    if($ingredient) {
+        if($ingredient->inventory) {
+            $ingredient->inventory->delete();
+        }
+        $ingredient->delete();
+    }
+
+    // CAMBIO CLAVE: Redirect en lugar de View
+    return redirect()->route('ingredients.index')->with('message', 'Ingrediente eliminado correctamente');
+}
+
 public function update(Request $request, $id){
     $ingredient = Ingredient::with('inventory')->with('suppliers')->find($id);
         $request->validate([
@@ -121,17 +129,13 @@ public function update(Request $request, $id){
         return back()->withInput()->withErrors(['error' => 'Error al actualizar: ' . $e->getMessage()]);
     }
     }
-public function destroy($id){
-    $ingredient = Ingredient::with('inventory')->with('suppliers')->find($id);
-    $ingredient->inventory->delete();
-    $ingredient->delete();
-    
-    }
+
        public function getImage($filename)
    {
        $file = Storage::disk('images')->get($filename);
        return new Response($file, 200);
    }
+
    public function getVideo($filename)
    {
        $file = Storage::disk('videos')->get($filename);
@@ -140,6 +144,7 @@ public function destroy($id){
 
     public function create()
     {
-        return view('ingredient.create');
+        $suppliers = Supply::get();
+        return view('ingredient.create', compact('suppliers'));
     }
 }

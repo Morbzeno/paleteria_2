@@ -19,10 +19,8 @@ return new class extends Migration
             $table->string('description')->nullable(false);
             $table->decimal('price', total: 8, places: 2)->nullable(false);  
             
-
-           $table->string('title', 100);
-           $table->string('image', 100);
-           $table->string('video_path', 100);
+           $table->string('image', 255)->nullable(true);
+           $table->string('video_path', 255)->nullable(true);
 
             $table->timestamps();
             $table->softDeletes();
