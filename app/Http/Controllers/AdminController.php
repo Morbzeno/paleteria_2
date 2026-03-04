@@ -105,6 +105,7 @@ class AdminController extends Controller
                     'admin_type'=> $request->admin_type
                 ]);
                 $admin->save();
+                $user->sendEmailVerificationNotification();
 
                 // return response()->json([
                 //     'message' => 'User actualizado correctamente',

@@ -39,7 +39,7 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
                         <!-- Authentication Links -->
-                        @guest
+                        <!-- @guest -->
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('admins.index') }}">Administradores</a>
                         </li>
@@ -78,7 +78,7 @@
                                     </form>
                                 </div>
                             </li>
-                        @endguest
+                        <!-- @endguest -->
                     </ul>
                 </div>
             </div>

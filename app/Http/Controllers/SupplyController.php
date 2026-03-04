@@ -6,12 +6,15 @@ use Illuminate\Http\Request;
 use App\Models\Supply;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\CorreoDeRecuperacion;
 
 class SupplyController extends Controller
 {
     public function index(Request $request){
         // $supplys = supply::findOrFail()->get();
         $supplies = Supply::paginate(10);
+        Mail::to('destinatario@gmail.com')->send(new CorreoDeRecuperacion());
         return view('supply.index', compact('supplies'));
     }
 

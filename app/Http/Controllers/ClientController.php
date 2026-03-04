@@ -14,8 +14,8 @@ class ClientController extends Controller
 {
     public function index(Request $request){
         // $Clients = Client::findOrFail()->get();
-        $clients = Client::with(['user','person', 'direction'])->paginate(10);
 
+        $clients = Client::with(['user','person', 'direction'])->paginate(10);
         // if($clients->isEmpty()){
         //     return response()->json([
         //         'message' => 'no se encontraron Client',
@@ -103,7 +103,7 @@ class ClientController extends Controller
                 //     'data' => $Client
                 // ], 200);
                 $clients = Client::with(['user','person', 'direction'])->paginate(10);
-
+                $user->sendEmailVerificationNotification();
                 return view('clients.index', compact('clients'));
             });
         } catch (\Exception $e) {

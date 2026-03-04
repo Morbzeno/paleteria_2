@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('last_name')->nullable(false);
             $table->string('rfc')->unique()->nullable(false);
             $table->string('phone_number')->unique()->nullable(false);
-            $table->string('email_address')->unique()->nullable(false);
                
             $table->timestamps();
             $table->softDeletes();

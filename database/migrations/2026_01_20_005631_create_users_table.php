@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('email')->unique()->nullable(false);
             $table->string('password')->nullable(false);
             $table->enum('rol', ['client', 'admin'])->default('client') ->index()->nullable(false);
+            $table->timestamp('email_verified_at')->nullable();
+            $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
         });

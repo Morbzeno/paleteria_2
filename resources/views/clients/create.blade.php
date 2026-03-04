@@ -78,7 +78,7 @@
                                     <label class="form-label">Tipo de cliente</label>
                                     <select name="client_type" class="form-select">
                                         <option value="normal" selected>Normal</option>
-                                        <option value="wholesarer">wholesare</option>
+                                        <option value="wholesaler">wholesaler</option>
                                     </select>
                                 </div>
                             </div>
