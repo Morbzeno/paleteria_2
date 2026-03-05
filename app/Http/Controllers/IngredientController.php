@@ -31,6 +31,23 @@ class IngredientController extends Controller
         // ],200);
     }
 
+    public function carrousel(Request $request){
+        // $ingredients = ingredient::findOrFail()->get();
+        $ingredients = Ingredient::with('inventory')->with('suppliers')->paginate(10);
+
+        // if($ingredients->isEmpty()){
+        //     return response()->json([
+        //         'message' => 'no se encontraron ingredient',
+        //         ],400);
+        // }
+
+        return view('view.dashboard', compact('ingredients'));
+        // return response()->json([
+        //     'message' => 'Todos los ingredients aquí',
+        //     'data' => $ingredients
+        // ],200);
+    }
+
     public function show($id){
         $ingredient = Ingredient::with('inventory')->with('suppliers')->find($id);
 
