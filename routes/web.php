@@ -26,15 +26,14 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 Route::get('/clients/nuevo', [ClientController::class, 'create'])->name('client.create');
 
 // Rutas de Admins (Resource ya incluye index, create, store, edit, update, destroy)
-// Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('admins', AdminController::class);
     Route::resource('supply', SupplyController::class);
     Route::resource('ingredients', IngredientController::class);
     Route::resource('clients', ClientController::class);
     Route::GET('getImage/{filename}', [IngredientController::class, 'getImage']);
-// });
+});
 
-Route::get('/', [IngredientController::class, 'carrousel'])->name('view.dashboard');
 // Auth::routes();
 
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
