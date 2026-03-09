@@ -39,16 +39,7 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
                         <!-- Authentication Links -->
-                        <!-- @guest -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admins.index') }}">Administradores</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('clients.index') }}">Clientes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{route('supply.index')}}">Provedores</a>
-                        </li>
+                        @guest
                             @if (Route::has('login'))
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
@@ -61,9 +52,25 @@
                                 </li>
                             @endif
                         @else
+                            @if (Auth::user()->rol == 'admin')
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('admins.index') }}">Administradores</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('clients.index') }}">Clientes</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{route('supply.index')}}">Provedores</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{route('ingredients.index')}}">Ingredientes</a>
+                                </li>
+                                @endif
+                        
+
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }}
+                                    {{ Auth::user()->rol }}
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
