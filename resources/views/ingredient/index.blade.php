@@ -59,6 +59,9 @@
                     <h4 class="mb-0">
                         <i class="fas fa-utensils me-2"></i>Lista de Ingredientes
                     </h4>
+                    <a href="{{route('ingredients.generatePDF')}}" class="btn btn-light btn-sm shadow-sm">
+                        <i class="fas fa-file-pdf me-1"></i> Generar PDF
+                    </a>
                     <a href="{{ route('ingredients.create') }}" class="btn btn-light btn-sm shadow-sm">
                         <i class="fas fa-plus me-1"></i> Nuevo Ingrediente
                     </a>

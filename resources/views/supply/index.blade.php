@@ -11,6 +11,9 @@
                     <h4 class="mb-0">
                         <i class="fas fa-users me-2"></i>Lista de proveedores
                     </h4>
+                    <a href="{{ route('supplies.generatePDF') }}" class="btn btn-light btn-sm shadow-sm">
+                        <i class="fas fa-plus me-1"></i> Descargar pdf
+                    </a>
                     <a href="{{ route('supply.create') }}" class="btn btn-light btn-sm shadow-sm">
                         <i class="fas fa-plus me-1"></i> Nuevo proveedor
                     </a>

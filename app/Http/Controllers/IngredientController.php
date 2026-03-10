@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Response;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class IngredientController extends Controller
 {
@@ -146,5 +147,13 @@ public function update(Request $request, $id){
     {
         $suppliers = Supply::get();
         return view('ingredient.create', compact('suppliers'));
+    }
+
+    public function generatePDF()
+    {
+        $ingredients = Ingredient::get();
+        $pdf = Pdf::loadView('pdf.ingredients', compact('ingredients'));
+        return $pdf->download('ingredients.pdf');
+        
     }
 }
