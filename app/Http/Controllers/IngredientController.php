@@ -131,9 +131,10 @@ public function update(Request $request, $id){
     }
     }
 
-       public function getImage($filename)
+    public function getImage($filename)
    {
-       $file = Storage::disk('images')->get($filename);
+        $file = Storage::disk('images')->get($filename);
+        
        return new Response($file, 200);
    }
 

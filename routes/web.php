@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\SupplyController;
+use App\Http\Controllers\AssetController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 Route::get('/email/verify', function () {
@@ -17,17 +18,22 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
 
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('admins', AdminController::class);
     Route::resource('supply', SupplyController::class);
     Route::resource('ingredients', IngredientController::class);
     Route::resource('clients', ClientController::class);
+    Route::resource('assets', AssetController::class);
     Route::GET('getImage/{filename}', [IngredientController::class, 'getImage']);
-    
+    Route::GET('getVideo/{filename}', [IngredientController::class, 'getVideo']);
     Route::get('/generate-pdf', [SupplyController::class, 'generatePDF'])->name('supplies.generatePDF');
     Route::get('/generate-pdf-ingredients', [IngredientController::class, 'generatePDF'])->name('ingredients.generatePDF');
-    });
+});
 
+Route::get('/', function () {
+    return view('dashboard');
+});
 // Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

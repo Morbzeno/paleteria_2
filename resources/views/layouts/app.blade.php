@@ -14,9 +14,9 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
-
+    <!-- @vite(['resources/css/app.css', 'resources/js/app.js']) -->
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Scripts -->
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 <body>
  
@@ -53,6 +53,9 @@
                             @endif
                         @else
                             @if (Auth::user()->rol == 'admin')
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('assets.index')}}">Assets</a>
+                                </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('admins.index') }}">Administradores</a>
                                 </li>

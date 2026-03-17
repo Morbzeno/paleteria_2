@@ -115,10 +115,9 @@ class AdminController extends Controller
                 return view('admins.index', compact('admins'));
             });
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error al procesar el registro',
-                'error' => $e->getMessage()
-            ],500);
+            return back()
+            ->withInput() 
+            ->withErrors(['error' => 'Hubo un problema al guardar: ' . $e->getMessage()]);
         }
     }
 
@@ -130,48 +129,48 @@ class AdminController extends Controller
         return view('admins.edit', compact('admin'));
     }
 
-public function update(Request $request, $id)
-{
-    $admin = Admin::with(['user', 'person', 'direction'])->findOrFail($id);
+    public function update(Request $request, $id)
+    {
+        $admin = Admin::with(['user', 'person', 'direction'])->findOrFail($id);
 
-    $request->validate([
-        'email' => 'sometimes|email',
-        'password' => 'nullable|min:6',
-        'name' => 'sometimes|string', 
-        'last_name' => 'sometimes|string',
-        'rfc' => 'sometimes|string',
-        'phone_number' => 'sometimes|string',
-        'street' => 'sometimes|string', 
-        'colony' => 'sometimes|string',
-        'city' => 'sometimes|string',
-        'postal_code' => 'sometimes|string',
-        'payment' => 'sometimes|numeric',
-        'schedule' => 'sometimes|string',
-        'admin_type' => 'sometimes|string',
-    ]);
+        $request->validate([
+            'email' => 'sometimes|email',
+            'password' => 'nullable|min:6',
+            'name' => 'sometimes|string', 
+            'last_name' => 'sometimes|string',
+            'rfc' => 'sometimes|string',
+            'phone_number' => 'sometimes|string',
+            'street' => 'sometimes|string', 
+            'colony' => 'sometimes|string',
+            'city' => 'sometimes|string',
+            'postal_code' => 'sometimes|string',
+            'payment' => 'sometimes|numeric',
+            'schedule' => 'sometimes|string',
+            'admin_type' => 'sometimes|string',
+        ]);
 
-    try {
-        return DB::transaction(function () use ($request, $admin) {
-            
-            $userData = $request->only(['email']);
-            if ($request->filled('password')) {
-                $userData['password'] = bcrypt($request->password);
-            }
-            $admin->user->update($userData);
+        try {
+            return DB::transaction(function () use ($request, $admin) {
+                
+                $userData = $request->only(['email']);
+                if ($request->filled('password')) {
+                    $userData['password'] = bcrypt($request->password);
+                }
+                $admin->user->update($userData);
 
-            $admin->person->update($request->only(['name', 'last_name', 'rfc', 'phone_number']));
+                $admin->person->update($request->only(['name', 'last_name', 'rfc', 'phone_number']));
 
-            $admin->direction->update($request->only(['street', 'colony', 'city', 'postal_code']));
+                $admin->direction->update($request->only(['street', 'colony', 'city', 'postal_code']));
 
-            $admin->update($request->only(['payment', 'schedule', 'admin_type']));
+                $admin->update($request->only(['payment', 'schedule', 'admin_type']));
 
-            return redirect()->route('admins.index')->with('success', 'Administrador actualizado correctamente');
-        });
+                return redirect()->route('admins.index')->with('success', 'Administrador actualizado correctamente');
+            });
 
-    } catch (\Exception $e) {
-        return back()->withInput()->withErrors(['error' => 'Error al actualizar: ' . $e->getMessage()]);
+        } catch (\Exception $e) {
+            return back()->withInput()->withErrors(['error' => 'Error al actualizar: ' . $e->getMessage()]);
+        }
     }
-}
     public function destroy($id){
         $admin = Admin::find($id);
 

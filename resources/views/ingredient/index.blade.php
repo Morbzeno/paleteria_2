@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div id="ingredientCarousel" class="carousel slide shadow-lg rounded" data-bs-ride="carousel">
+<div id="ingredientCarousel" class="carousel slide shadow-lg rounded overflow-hidden" data-bs-ride="carousel">
     <div class="carousel-indicators">
         @foreach($ingredients as $index => $ingredient)
             <button type="button" data-bs-target="#ingredientCarousel" data-bs-slide-to="{{ $index }}" 
@@ -11,26 +11,35 @@
 
     <div class="carousel-inner">
         @foreach($ingredients as $index => $ingredient)
-            <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+            <div class="carousel-item {{ $index == 0 ? 'active' : '' }}" data-bs-interval="5000">
                 @if($ingredient->image)
                     <img src="http://127.0.0.1:8000/api/getImage/{{ $ingredient->image }}" 
                          class="d-block w-100" 
                          style="height: 500px; object-fit: cover;" 
                          alt="{{ $ingredient->name }}">
+                @else
+                    <div class="d-block w-100 bg-secondary d-flex align-items-center justify-content-center" style="height: 500px;">
+                        <i class="fas fa-carrot fa-5x text-white"></i>
+                    </div>
                 @endif
                 
-                <div class="carousel-caption d-none d-md-block" style="background: rgba(0,0,0,0.5); border-radius: 15px;">
-                    <h5>{{ $ingredient->name }}</h5>
+                <div class="carousel-caption d-none d-md-block p-3" style="background: rgba(0,0,0,0.6); border-radius: 15px; bottom: 10%;">
+                    <h3 class="fw-bold">{{ $ingredient->name }}</h3>
                     <p>{{ $ingredient->description }}</p>
-                    <span class="badge bg-success">Precio: ${{ number_format($ingredient->price, 2) }}</span>
+                    
+                    <div class="mb-2">
+                        <span class="badge bg-light text-dark fs-6">Precio: ${{ number_format($ingredient->price, 2) }}</span>
+                    </div>
+
+                    {{-- Lógica de Stock corregida --}}
                     @if ($ingredient->inventory->stock >= 21)
-                        <span class="badge bg-success">Stock disponible: ${{ number_format($ingredient->inventory->stock) }}</span>
-                    @elseif ($ingredient->inventory->stock >= 6 AND $ingredient->inventory->stock <= 20)
-                        <span class="badge bg-warning">Stock disponible: ${{ number_format($ingredient->inventory->stock) }}</span>
-                    @elseif ($ingredient->inventory->stock >= 1 AND $ingredient->inventory->stock <= 5)
-                        <span class="badge bg-danger">Stock disponible: ${{ number_format($ingredient->inventory->stock) }}</span>
+                        <span class="badge bg-success">Stock: {{ $ingredient->inventory->stock }} unidades</span>
+                    @elseif ($ingredient->inventory->stock >= 6)
+                        <span class="badge bg-warning text-dark">Stock: {{ $ingredient->inventory->stock }} unidades</span>
+                    @elseif ($ingredient->inventory->stock >= 1)
+                        <span class="badge bg-danger">¡Últimas {{ $ingredient->inventory->stock }} unidades!</span>
                     @else 
-                        <span class="badge bg-danger">No hay stock disponible</span>
+                        <span class="badge bg-secondary">Sin existencias</span>
                     @endif
                 </div>
             </div>
@@ -46,9 +55,6 @@
         <span class="visually-hidden">Siguiente</span>
     </button>
 </div>
-
-
-
 
 <div class="container py-5">
     <div class="row justify-content-center">
