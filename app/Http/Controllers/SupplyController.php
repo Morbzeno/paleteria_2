@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\CorreoDeRecuperacion;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class SupplyController extends Controller
 {
@@ -103,5 +104,10 @@ public function destroy($id){
     return view('supply.index', compact('supplies'))->with('success', 'Proovedor eliminado correctamente.');
 
     }
-}
 
+public function generatePDF(){
+    $supplies = Supply::all();
+    $pdf = Pdf::loadView('pdf.suppliers', compact('supplies'));
+    return $pdf->download('suppliers.pdf');
+}
+}

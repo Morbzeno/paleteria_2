@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Response;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class IngredientController extends Controller
 {
@@ -25,23 +26,6 @@ class IngredientController extends Controller
         // }
 
         return view('ingredient.index', compact('ingredients'));
-        // return response()->json([
-        //     'message' => 'Todos los ingredients aquí',
-        //     'data' => $ingredients
-        // ],200);
-    }
-
-    public function carrousel(Request $request){
-        // $ingredients = ingredient::findOrFail()->get();
-        $ingredients = Ingredient::with('inventory')->with('suppliers')->paginate(10);
-
-        // if($ingredients->isEmpty()){
-        //     return response()->json([
-        //         'message' => 'no se encontraron ingredient',
-        //         ],400);
-        // }
-
-        return view('view.dashboard', compact('ingredients'));
         // return response()->json([
         //     'message' => 'Todos los ingredients aquí',
         //     'data' => $ingredients
@@ -147,9 +131,10 @@ public function update(Request $request, $id){
     }
     }
 
-       public function getImage($filename)
+    public function getImage($filename)
    {
-       $file = Storage::disk('images')->get($filename);
+        $file = Storage::disk('images')->get($filename);
+        
        return new Response($file, 200);
    }
 
@@ -163,5 +148,13 @@ public function update(Request $request, $id){
     {
         $suppliers = Supply::get();
         return view('ingredient.create', compact('suppliers'));
+    }
+
+    public function generatePDF()
+    {
+        $ingredients = Ingredient::get();
+        $pdf = Pdf::loadView('pdf.ingredients', compact('ingredients'));
+        return $pdf->download('ingredients.pdf');
+        
     }
 }

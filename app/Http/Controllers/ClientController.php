@@ -107,10 +107,9 @@ class ClientController extends Controller
                 return view('clients.index', compact('clients'));
             });
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error al procesar el registro',
-                'error' => $e->getMessage()
-            ],500);
+            return back()
+            ->withInput() 
+            ->withErrors(['error' => 'Hubo un problema al guardar: ' . $e->getMessage()]);
         }
     }
 
@@ -120,7 +119,7 @@ public function update(Request $request, $id)
 
     $request->validate([
         'email' => 'sometimes|email',
-        'password' => 'nullable|min:6', // Usamos nullable para que no obligue si viene vacío
+        'password' => 'nullable|min:6', 
         'name' => 'sometimes|string', 
         'last_name' => 'sometimes|string',
         'rfc' => 'sometimes|string',
