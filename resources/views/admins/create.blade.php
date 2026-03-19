@@ -88,7 +88,7 @@
                                     <label class="form-label">Pago Mensual</label>
                                     <div class="input-group">
                                         <span class="input-group-text">$</span>
-                                        <input type="number" name="payment" class="form-control" step="0.01" required>
+                                        <input type="number" name="payment" class="form-control" step="0.01" required, max="99999" min="100">
                                     </div>
                                 </div>
                                 <div class="col-md-4">

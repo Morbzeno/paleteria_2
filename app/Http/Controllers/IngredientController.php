@@ -88,7 +88,7 @@ public function store(Request $request) {
             ]);
         });
 
-        // CAMBIO CLAVE: Redirect en lugar de View
+    
         return redirect()->route('ingredients.index')->with('message', 'Ingrediente creado con éxito');
 
     } catch(\Exception $e) {
@@ -106,7 +106,6 @@ public function destroy($id) {
         $ingredient->delete();
     }
 
-    // CAMBIO CLAVE: Redirect en lugar de View
     return redirect()->route('ingredients.index')->with('message', 'Ingrediente eliminado correctamente');
 }
 

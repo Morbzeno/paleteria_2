@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Direction;
 use App\Models\Person;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 
 class ClientController extends Controller
@@ -77,8 +78,6 @@ class ClientController extends Controller
                     'rfc' => $request->rfc,
                     'phone_number' => $request->phone_number
                 ]);
-                $person->save();
-
                 // $direction = new Direction();
                 $direction = Direction::create([
                     'street' => $request->street, 
@@ -86,9 +85,6 @@ class ClientController extends Controller
                     'city' => $request->city,
                     'postal_code' => $request->postal_code
                 ]);
-                $direction->save();
-
-                
                 // $Client = new Client();
                 $Client = Client::create([
                     'user_id' => $user->user_id,
@@ -96,8 +92,6 @@ class ClientController extends Controller
                     'direction_id' => $direction->direction_id,
                     'client_type' => $request->client_type,
                 ]);
-                $Client->save();
-
                 // return response()->json([
                 //     'message' => 'User actualizado correctamente',
                 //     'data' => $Client
@@ -179,4 +173,8 @@ public function update(Request $request, $id)
         // ], 200);
     }
 
+    public function resent_verification(){
+        $user = Auth::user();
+        $user->sendEmailVerificationNotification();
+    }
 }

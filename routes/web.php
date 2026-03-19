@@ -9,7 +9,7 @@ use App\Http\Controllers\AssetController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 Route::get('/email/verify', function () {
-    return view('auth.verify-email');
+    return view('auth.verify');
 })->middleware('auth')->name('verification.notice');
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
@@ -17,13 +17,13 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
     return redirect('/');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
-
-
+Route::POST('resent_verification',[ ClientController::class, 'resent_verification'])->name('verification.resend');
+Route::resource('clients', ClientController::class);
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('admins', AdminController::class);
     Route::resource('supply', SupplyController::class);
     Route::resource('ingredients', IngredientController::class);
-    Route::resource('clients', ClientController::class);
+    
     Route::resource('assets', AssetController::class);
     Route::GET('getImage/{filename}', [IngredientController::class, 'getImage']);
     Route::GET('getVideo/{filename}', [IngredientController::class, 'getVideo']);
