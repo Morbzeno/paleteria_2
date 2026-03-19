@@ -117,17 +117,32 @@ public function update(Request $request, $id){
         "price" => "required",
         "stock" => "required"
     ]);
-    try {
-        return DB::transaction(function() use ($request, $ingredient){
-            $supplier = 1;
-            $ingredient->inventory->update($request->only(['stock'])); 
+        try {
+            return DB::transaction(function() use ($request, $ingredient){
+                $ingredient->inventory->update($request->only(['stock'])); 
 
-            $ingredient->update($request->only(['name', 'description', 'price']));
+                $ingredient->update($request->only(['name', 'description', 'price']));
+                    
+                if ($request->hasFile('image')) {
+                    $image = $request->file('image');
+                    $image_path = time() . $image->getClientOriginalName();
+                    Storage::disk('images')->put($image_path, File::get($image));
+                    $ingredient->image = $image_path;
+                }
 
-        });
-    } catch (\Exception $e){
-        return back()->withInput()->withErrors(['error' => 'Error al actualizar: ' . $e->getMessage()]);
-    }
+                if ($request->hasFile('video_path')) {
+                    $video_file = $request->file('video_path');
+                    $video_path = time() . $video_file->getClientOriginalName();
+                    Storage::disk('videos')->put($video_path, File::get($video_file));
+                    $ingredient->video_path = $video_path;
+                }
+
+                $ingredient->save();
+                return redirect()->route('ingredients.index')->with('message', 'Ingrediente actualizado con éxito');
+            });
+        }catch (\Exception $e){
+            return back()->withInput()->withErrors(['error' => 'Error al actualizar: ' . $e->getMessage()]);
+        }
     }
 
     public function getImage($filename)
@@ -137,11 +152,21 @@ public function update(Request $request, $id){
        return new Response($file, 200);
    }
 
-   public function getVideo($filename)
-   {
-       $file = Storage::disk('videos')->get($filename);
-       return new Response($file, 200);
-   }
+    public function getVideo($filename)
+    {
+        if (!Storage::disk('videos')->exists($filename)) {
+            return response()->json(['error' => 'Archivo no encontrado'], 404);
+        }
+
+        $path = Storage::disk('videos')->path($filename);
+
+        return response()->file($path, [
+            'Content-Type' => 'video/mp4',
+            'Access-Control-Allow-Origin' => '*', 
+            'Access-Control-Allow-Methods' => 'GET',
+            'Access-Control-Allow-Headers' => 'Content-Type, Authorization',
+        ]);
+    }
 
     public function create()
     {
@@ -149,6 +174,12 @@ public function update(Request $request, $id){
         return view('ingredient.create', compact('suppliers'));
     }
 
+    public function edit($id)
+    {
+        $ingredient = Ingredient::with('inventory')->with('suppliers')->findOrFail($id);
+        $suppliers = Supply::get();
+        return view('ingredient.edit', compact('ingredient', 'suppliers'));
+    }
     public function generatePDF()
     {
         $ingredients = Ingredient::get();

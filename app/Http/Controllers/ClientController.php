@@ -176,5 +176,6 @@ public function update(Request $request, $id)
     public function resent_verification(){
         $user = Auth::user();
         $user->sendEmailVerificationNotification();
+        return back()->with('message', 'Correo de verificación reenviado');
     }
 }

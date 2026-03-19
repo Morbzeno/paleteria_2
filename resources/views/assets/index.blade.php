@@ -47,7 +47,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                                                                        @if($asset->video)
+                                            @if($asset->video)
                                                 <video controls style="width: 240px; height: 240px; object-fit: cover;">
                                                     <source src="{{ asset('storage/videos/' . $asset->video) }}" type="video/mp4">
                                                     Tu navegador no soporta el formato de video.
